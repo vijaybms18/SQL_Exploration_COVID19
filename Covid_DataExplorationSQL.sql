@@ -96,26 +96,6 @@ Join PortfolioProject..CovidVaccinations vac
 where death.continent is not null 
 order by 2,3
 
-
--- Using CTE to perform Calculation on Partition By
-
-With PopvsVac (Continent, Location, Date, Population, New_Vaccinations, RollingPeopleVaccinated)
-as
-(
-Select death.continent, death.location, death.date, death.population, vac.new_vaccinations
-, SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (Partition by death.Location Order by death.location, death.Date) as RollingPeopleVaccinated
-From PortfolioProject..CovidDeaths death
-Join PortfolioProject..CovidVaccinations vac
-	On death.location = vac.location
-	and death.date = vac.date
-where death.continent is not null 
---order by 2,3
-)
-Select *, (RollingPeopleVaccinated/Population)*100 as RollingPercentage
-From PopvsVac
-
-
-
 -- Using Temp Table to perform Calculation on Partition By
 
 -- Drop table if exists
